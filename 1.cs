@@ -1,18 +1,14 @@
 ﻿/*Задание 1
-1)	Создать абстрактный класс Figure с методами вычисления площади и периметра, а также методом, выводящим  информацию о фигуре на экран. 
-2)	Создать производные классы: Rectangle (прямоугольник), Circle (круг), Triangle (треугольник) со своими методами вычисления площади и периметра. 
-3)	Создать массив n фигур и вывести полную информацию о фигурах на экран. */
+1)        Создать абстрактный класс Figure с методами вычисления площади и периметра, а также методом, выводящим информацию о фигуре на экран.
+2)        Создать производные классы: Rectangle (прямоугольник), Circle (круг), Triangle (треугольник) со своими методами вычисления площади и периметра.
+3)        Создать массив n фигур и вывести полную информацию о фигурах на экран. */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace Figure
 {
-    //Создать абстрактный класс Figure с методами вычисления площади и периметра, а также методом, выводящим  информацию о фигуре на экран. 
+    //Создать абстрактный класс Figure с методами вычисления площади и периметра, а также методом, выводящим информацию о фигуре на экран.
     abstract class Figure
     {
         public abstract double Area();
@@ -22,7 +18,7 @@ namespace Figure
         public abstract void ShowInfo();
     }
 
-    //Создать производные классы: Rectangle (прямоугольник) со своими методами вычисления площади и периметра. 
+    //Создать производные классы: Rectangle (прямоугольник) со своими методами вычисления площади и периметра.
     class Rectangle : Figure
     {
         int a, b;
@@ -43,7 +39,7 @@ namespace Figure
         }
     }
 
-    //Создать производные классы: Triangle (треугольник) со своими методами вычисления площади и периметра. 
+    //Создать производные классы: Triangle (треугольник) со своими методами вычисления площади и периметра.
     class Triangle : Figure
     {
         int a, b, c;
@@ -70,7 +66,7 @@ namespace Figure
         }
     }
 
-    //Создать производные классы: Circle (круг),  со своими методами вычисления площади и периметра. 
+    //Создать производные классы: Circle (круг), со своими методами вычисления площади и периметра.
     class Circle : Figure
     {
         const double pi = 3.14;
@@ -93,7 +89,7 @@ namespace Figure
     {
         static void Main(string[] args)
         {
-            Figure[] array_fig = read();
+            Figure[] array_fig = GetArrayFigures();
 
             foreach (Figure fig in array_fig)
             {
@@ -105,49 +101,69 @@ namespace Figure
             Console.ReadKey();
         }
 
-        public static Figure[] read()
+        public static Figure[] GetArrayFigures()
         {
-            StreamReader fin = new StreamReader("input.txt");
-            string str = fin.ReadToEnd();
-            fin.Close();
-                        
-
-            string[] s = str.Split('\n');
-
+            string[] s = ReadFile().Split('\n');
             Figure[] array_fig = new Figure[s.Length];
 
-            int a = 0, b = 0, c = 0, r = 0, i = 0;
+            int a, b, c, r, i = 0, n = 0;
 
             while (i < s.Length)
             {
-                switch (s[i][0])
+                string[] str = s[i].Split(' ');
+
+                if (str[0] == "rectangle")
                 {
-                    case 'r':
-                        string[] rectangle = s[i].Split(' ');
-                        a = Convert.ToInt32(rectangle[1]);
-                        b = Convert.ToInt32(rectangle[2]);
-                        array_fig[i] = new Rectangle(a, b);
-                        i++;
-                        break;
-                    case 'c':
-                        string[] circle = s[i].Split(' ');
-                        r = Convert.ToInt32(circle[1]);
-                        array_fig[i] = new Circle(r);
-                        i++;
-                        break;
-                    case 't':
-                        string[] triangle = s[i].Split(' ');
-                        a = Convert.ToInt32(triangle[1]);
-                        b = Convert.ToInt32(triangle[2]);
-                        c = Convert.ToInt32(triangle[3]);
-                        array_fig[i] = new Triangle(a, b, c);
-                        i++;
-                        break;
-                    default:
-                        break;
+                    a = Convert.ToInt32(str[1]);
+                    b = Convert.ToInt32(str[2]);
+                    array_fig[n] = new Rectangle(a, b);
+                    n++;
                 }
-            }            
+                if (str[0] == "circle")
+                {
+                    r = Convert.ToInt32(str[1]);
+                    array_fig[i] = new Circle(r);
+                    n++;
+                }
+                if (str[0] == "triangle")
+                {
+                    a = Convert.ToInt32(str[1]);
+                    b = Convert.ToInt32(str[2]);
+                    c = Convert.ToInt32(str[3]);
+                    array_fig[i] = new Triangle(a, b, c);
+                    n++;
+                }
+                i++;
+            }
             return array_fig;
+        }
+
+        public static string ReadFile()
+        {
+            string str = string.Empty;
+
+            try
+            {
+                StreamReader fin = new StreamReader("input.txt");
+                str = fin.ReadToEnd();
+                fin.Close();
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Файл не найден, поместите файл в необходимую директорию.");
+                ReadFile();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine("Директория не найдена");
+                ReadFile();
+            }
+            catch (PathTooLongException)
+            {
+                Console.WriteLine("Путь или имя файла превышает максимальную длину, определенную системой.");
+                ReadFile();
+            }
+            return str;
         }
     }
 }
